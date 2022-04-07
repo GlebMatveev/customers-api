@@ -80,4 +80,47 @@ $app->post('/customers-data/add', function (Request $request, Response $response
     }
 });
 
+// http://localhost:8888/customers-data/update/{id}
+$app->put('/customers-data/update/{id}', function (Request $request, Response $response, array $args) {
+ $id = $request->getAttribute('id');
+ $data = $request->getParsedBody();
+ $name = $data["name"];
+ $email = $data["email"];
+ $phone = $data["phone"];
+
+ $sql = "UPDATE customers SET
+           name = :name,
+           email = :email,
+           phone = :phone
+        WHERE id = $id";
+
+ try {
+   $db = new Db();
+   $conn = $db->connect();
+  
+   $stmt = $conn->prepare($sql);
+   $stmt->bindParam(':name', $name);
+   $stmt->bindParam(':email', $email);
+   $stmt->bindParam(':phone', $phone);
+
+   $result = $stmt->execute();
+
+   $db = null;
+   echo "Update successful! ";
+   $response->getBody()->write(json_encode($result));
+   return $response
+     ->withHeader('content-type', 'application/json')
+     ->withStatus(200);
+ } catch (PDOException $e) {
+   $error = array(
+     "message" => $e->getMessage()
+   );
+
+   $response->getBody()->write(json_encode($error));
+   return $response
+     ->withHeader('content-type', 'application/json')
+     ->withStatus(500);
+ }
+});
+
 $app->run();
