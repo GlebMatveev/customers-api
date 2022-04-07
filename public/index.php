@@ -16,6 +16,13 @@ $app->addRoutingMiddleware();
 $app->add(new BasePathMiddleware($app));
 $app->addErrorMiddleware(true, true, true);
 
+$app->add(new Tuupola\Middleware\HttpBasicAuthentication([
+    "users" => [
+        "root" => "t00r",
+        "somebody" => "passw0rd"
+    ]
+]));
+
 // http://localhost:8888/customers-data/all
 $app->get('/customers-data/all', function (Request $request, Response $response) {
     $sql = "SELECT * FROM customers";
