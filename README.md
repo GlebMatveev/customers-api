@@ -8,9 +8,10 @@ The article has a typo.
 Including the DB class in the index.php file is incorrect.
 
 Instead of 
-```
+```php
 use App\Model\DB;
 ```
 need
-```
+```php
 use App\Models\DB;
+```
